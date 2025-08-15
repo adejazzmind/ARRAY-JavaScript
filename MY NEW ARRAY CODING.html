@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Explorer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .app-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 500px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .app-header {
+            background: linear-gradient(to right, #667eea, #764ba2);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .app-header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .app-header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .app-body {
+            padding: 30px;
+        }
+
+        .message-container {
+            background: rgba(236, 240, 241, 0.5);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+            border-left: 5px solid #667eea;
+            transition: all 0.3s ease;
+        }
+
+        .message-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .message-text {
+            font-size: 18px;
+            color: #2c3e50;
+            line-height: 1.6;
+        }
+
+        .courses-container {
+            margin-top: 30px;
+        }
+
+        .courses-title {
+            font-size: 22px;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
+
+        .courses-title i {
+            margin-right: 10px;
+            color: #667eea;
+        }
+
+        .course-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .course-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .course-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            border-color: #667eea;
+        }
+
+        .course-icon {
+            font-size: 30px;
+            margin-bottom: 15px;
+            color: #667eea;
+        }
+
+        .course-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .best-course {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .best-course .course-icon {
+            color: white;
+        }
+
+        .best-course .course-name {
+            color: white;
+        }
+
+        .highlight {
+            background: linear-gradient(to right, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+        }
+
+        .favorite-badge {
+            display: inline-block;
+            background: #e74c3c;
+            color: white;
+            font-size: 12px;
+            padding: 5px 10px;
+            border-radius: 20px;
+            margin-top: 10px;
+            font-weight: 600;
+        }
+
+        .array-visualization {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(236, 240, 241, 0.5);
+            border-radius: 15px;
+        }
+
+        .array-title {
+            font-size: 18px;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
+
+        .array-title i {
+            margin-right: 10px;
+            color: #667eea;
+        }
+
+        .array-elements {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+        }
+
+        .array-element {
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            border-radius: 10px;
+            font-weight: 600;
+            color: #2c3e50;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            position: relative;
+        }
+
+        .array-index {
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 14px;
+            color: #7f8c8d;
+        }
+
+        .array-element:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            background: #f8f9fa;
+        }
+
+        .index-0 { border: 2px solid #3498db; }
+        .index-1 { border: 2px solid #2ecc71; }
+        .index-2 { border: 2px solid #f1c40f; }
+        .index-3 { border: 2px solid #e67e22; }
+        .index-4 { border: 2px solid #e74c3c; }
+
+        .index-4 {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+        .delay-4 { animation-delay: 0.4s; }
+        .delay-5 { animation-delay: 0.5s; }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <div class="app-header">
+            <h1>Course Explorer</h1>
+            <p>Explore your favorite courses</p>
+        </div>
+        
+        <div class="app-body">
+            <div class="message-container fade-in">
+                <div class="message-text">
+                    I love <span class="highlight">Graphics</span>, I enjoy <span class="highlight">Python</span> but <span class="highlight">UIUX</span> is my Best!
+                </div>
+            </div>
+            
+            <div class="courses-container fade-in delay-1">
+                <div class="courses-title">
+                    <i class="fas fa-book"></i> My Courses
+                </div>
+                
+                <div class="course-list">
+                    <div class="course-card fade-in delay-1">
+                        <div class="course-icon">
+                            <i class="fas fa-paint-brush"></i>
+                        </div>
+                        <div class="course-name">Graphics</div>
+                    </div>
+                    
+                    <div class="course-card fade-in delay-2">
+                        <div class="course-icon">
+                            <i class="fas fa-code"></i>
+                        </div>
+                        <div class="course-name">Coding</div>
+                    </div>
+                    
+                    <div class="course-card fade-in delay-3">
+                        <div class="course-icon">
+                            <i class="fas fa-chart-bar"></i>
+                        </div>
+                        <div class="course-name">Data Science</div>
+                    </div>
+                    
+                    <div class="course-card fade-in delay-4">
+                        <div class="course-icon">
+                            <i class="fab fa-python"></i>
+                        </div>
+                        <div class="course-name">Python</div>
+                    </div>
+                    
+                    <div class="course-card best-course fade-in delay-5">
+                        <div class="course-icon">
+                            <i class="fas fa-palette"></i>
+                        </div>
+                        <div class="course-name">UIUX</div>
+                        <div class="favorite-badge">Favorite</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="array-visualization fade-in delay-3">
+                <div class="array-title">
+                    <i class="fas fa-list-ol"></i> JavaScript Array Visualization
+                </div>
+                
+                <div class="array-elements">
+                    <div class="array-element index-0 fade-in delay-1">
+                        <div class="array-index">[0]</div>
+                        Graphics
+                    </div>
+                    
+                    <div class="array-element index-1 fade-in delay-2">
+                        <div class="array-index">[1]</div>
+                        Coding
+                    </div>
+                    
+                    <div class="array-element index-2 fade-in delay-3">
+                        <div class="array-index">[2]</div>
+                        Data Science
+                    </div>
+                    
+                    <div class="array-element index-3 fade-in delay-4">
+                        <div class="array-index">[3]</div>
+                        Python
+                    </div>
+                    
+                    <div class="array-element index-4 fade-in delay-5">
+                        <div class="array-index">[4]</div>
+                        UIUX
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

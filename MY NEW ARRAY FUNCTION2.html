@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Array Operations Explorer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .app-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 800px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .app-header {
+            background: linear-gradient(to right, #667eea, #764ba2);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .app-header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .app-header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .app-body {
+            padding: 30px;
+        }
+
+        .array-container {
+            margin-bottom: 30px;
+        }
+
+        .array-title {
+            font-size: 22px;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
+
+        .array-title i {
+            margin-right: 10px;
+            color: #667eea;
+        }
+
+        .array-elements {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .array-element {
+            width: 120px;
+            height: 120px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            border-radius: 15px;
+            font-weight: 600;
+            color: #2c3e50;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            position: relative;
+            transition: all 0.3s ease;
+            border: 3px solid transparent;
+        }
+
+        .array-element:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .array-element.new {
+            border-color: #2ecc71;
+            animation: pulse 1s ease-in-out;
+        }
+
+        .array-element.removed {
+            border-color: #e74c3c;
+            opacity: 0.5;
+        }
+
+        .array-element.modified {
+            border-color: #f39c12;
+            animation: highlight 1s ease-in-out;
+        }
+
+        .array-index {
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 14px;
+            color: #7f8c8d;
+            background: #ecf0f1;
+            padding: 3px 8px;
+            border-radius: 10px;
+        }
+
+        .operation-container {
+            background: rgba(236, 240, 241, 0.5);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            border-left: 5px solid #667eea;
+        }
+
+        .operation-title {
+            font-size: 18px;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
+
+        .operation-title i {
+            margin-right: 10px;
+            color: #667eea;
+        }
+
+        .operation-description {
+            font-size: 16px;
+            color: #34495e;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
+        .operation-result {
+            font-size: 18px;
+            color: #2c3e50;
+            font-weight: 600;
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            letter-spacing: 1px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(to right, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #ecf0f1;
+            color: #7f8c8d;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .length-display {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            text-align: center;
+            margin-top: 30px;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .length-display:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .operation-step {
+            display: none;
+        }
+
+        .operation-step.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .operation-nav {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            gap: 10px;
+        }
+
+        .step-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #ecf0f1;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .step-dot.active {
+            background: #667eea;
+            transform: scale(1.2);
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes highlight {
+            0% { background-color: white; }
+            50% { background-color: #f39c12; color: white; }
+            100% { background-color: white; }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(-50px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .slide-in {
+            animation: slideIn 0.5s ease forwards;
+        }
+
+        .slide-in-delay-1 { animation-delay: 0.1s; }
+        .slide-in-delay-2 { animation-delay: 0.2s; }
+        .slide-in-delay-3 { animation-delay: 0.3s; }
+        .slide-in-delay-4 { animation-delay: 0.4s; }
+        .slide-in-delay-5 { animation-delay: 0.5s; }
+        .slide-in-delay-6 { animation-delay: 0.6s; }
+        .slide-in-delay-7 { animation-delay: 0.7s; }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <div class="app-header">
+            <h1>Array Operations Explorer</h1>
+            <p>Visualize JavaScript array functions in action</p>
+        </div>
+        
+        <div class="app-body">
+            <div class="array-container">
+                <div class="array-title">
+                    <i class="fas fa-list"></i> Current Array
+                </div>
+                <div class="array-elements" id="arrayElements">
+                    <!-- Array elements will be added here dynamically -->
+                </div>
+            </div>
+            
+            <div class="operation-container">
+                <div class="operation-step active" id="step1">
+                    <div class="operation-title">
+                        <i class="fas fa-plus-circle"></i> Initial Array
+                    </div>
+                    <div class="operation-description">
+                        We start with our initial car array: ["Benz", "Toyota", "Honda", "BMW"]
+                    </div>
+                    <div class="operation-result" id="operationResult">
+                        car = ["Benz", "Toyota", "Honda", "BMW"]
+                    </div>
+                </div>
+                
+                <div class="operation-step" id="step2">
+                    <div class="operation-title">
+                        <i class="fas fa-plus-circle"></i> push() Operation
+                    </div>
+                    <div class="operation-description">
+                        The push() method adds one or more elements to the end of an array and returns the new length.
+                    </div>
+                    <div class="operation-result">
+                        car.push("Volvo") adds "Volvo" to the end of the array
+                    </div>
+                </div>
+                
+                <div class="operation-step" id="step3">
+                    <div class="operation-title">
+                        <i class="fas fa-plus-circle"></i> unshift() Operation
+                    </div>
+                    <div class="operation-description">
+                        The unshift() method adds one or more elements to the beginning of an array and returns the new length.
+                    </div>
+                    <div class="operation-result">
+                        car.unshift("Volks Wagen") adds "Volks Wagen" to the beginning of the array
+                    </div>
+                </div>
+                
+                <div class="operation-step" id="step4">
+                    <div class="operation-title">
+                        <i class="fas fa-minus-circle"></i> pop() Operation
+                    </div>
+                    <div class="operation-description">
+                        The pop() method removes the last element from an array and returns that element.
+                    </div>
+                    <div class="operation-result">
+                        car.pop() removes the last element from the array
+                    </div>
+                </div>
+                
+                <div class="operation-step" id="step5">
+                    <div class="operation-title">
+                        <i class="fas fa-minus-circle"></i> shift() Operation
+                    </div>
+                    <div class="operation-description">
+                        The shift() method removes the first element from an array and returns that element.
+                    </div>
+                    <div class="operation-result">
+                        car.shift() removes the first element from the array
+                    </div>
+                </div>
+                
+                <div class="operation-step" id="step6">
+                    <div class="operation-title">
+                        <i class="fas fa-edit"></i> Element Modification
+                    </div>
+                    <div class="operation-description">
+                        You can modify array elements by accessing them with their index.
+                    </div>
+                    <div class="operation-result">
+                        car[1] = "IVM" changes the element at index 1 to "IVM"
+                    </div>
+                </div>
+                
+                <div class="operation-step" id="step7">
+                    <div class="operation-title">
+                        <i class="fas fa-ruler"></i> Array Length
+                    </div>
+                    <div class="operation-description">
+                        The length property returns the number of elements in an array.
+                    </div>
+                    <div class="operation-result">
+                        car.length returns the current length of the array
+                    </div>
+                </div>
+                
+                <div class="operation-nav" id="operationNav">
+                    <div class="step-dot active" data-step="1"></div>
+                    <div class="step-dot" data-step="2"></div>
+                    <div class="step-dot" data-step="3"></div>
+                    <div class="step-dot" data-step="4"></div>
+                    <div class="step-dot" data-step="5"></div>
+                    <div class="step-dot" data-step="6"></div>
+                    <div class="step-dot" data-step="7"></div>
+                </div>
+            </div>
+            
+            <div class="length-display" id="lengthDisplay">
+                Array Length: 4
+            </div>
+            
+            <div class="controls">
+                <button class="btn btn-secondary" id="resetBtn">
+                    <i class="fas fa-redo"></i> Reset
+                </button>
+                <button class="btn btn-primary" id="nextBtn">
+                    Next <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initial array
+        let car = ["Benz", "Toyota", "Honda", "BMW"];
+        let currentStep = 1;
+        const totalSteps = 7;
+        
+        // Array history for visualization
+        const arrayHistory = [
+            ["Benz", "Toyota", "Honda", "BMW"], // Initial
+            ["Benz", "Toyota", "Honda", "BMW", "Volvo"], // After push
+            ["Volks Wagen", "Benz", "Toyota", "Honda", "BMW", "Volvo"], // After unshift
+            ["Volks Wagen", "Benz", "Toyota", "Honda", "BMW"], // After pop
+            ["Benz", "Toyota", "Honda", "BMW"], // After shift
+            ["Benz", "IVM", "Honda", "BMW"], // After modification
+            ["Benz", "IVM", "Honda", "BMW"]  // Final array (same as previous)
+        ];
+        
+        // DOM elements
+        const arrayElements = document.getElementById('arrayElements');
+        const operationResult = document.getElementById('operationResult');
+        const lengthDisplay = document.getElementById('lengthDisplay');
+        const nextBtn = document.getElementById('nextBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const stepDots = document.querySelectorAll('.step-dot');
+        const operationSteps = document.querySelectorAll('.operation-step');
+        
+        // Initialize the app
+        function init() {
+            renderArray(car);
+            updateLengthDisplay();
+            setupEventListeners();
+        }
+        
+        // Render array elements
+        function renderArray(arr) {
+            arrayElements.innerHTML = '';
+            
+            arr.forEach((element, index) => {
+                const elementDiv = document.createElement('div');
+                elementDiv.className = 'array-element';
+                elementDiv.innerHTML = `
+                    <div class="array-index">[${index}]</div>
+                    ${element}
+                `;
+                arrayElements.appendChild(elementDiv);
+            });
+        }
+        
+        // Update length display
+        function updateLengthDisplay() {
+            lengthDisplay.textContent = `Array Length: ${car.length}`;
+        }
+        
+        // Setup event listeners
+        function setupEventListeners() {
+            // Next button
+            nextBtn.addEventListener('click', nextStep);
+            
+            // Reset button
+            resetBtn.addEventListener('click', resetApp);
+            
+            // Step navigation dots
+            stepDots.forEach(dot => {
+                dot.addEventListener('click', () => {
+                    const step = parseInt(dot.getAttribute('data-step'));
+                    goToStep(step);
+                });
+            });
+        }
+        
+        // Go to next step
+        function nextStep() {
+            if (currentStep < totalSteps) {
+                // Perform the operation for the current step
+                switch(currentStep) {
+                    case 1:
+                        // Initial array (no change)
+                        break;
+                    case 2:
+                        // push() operation
+                        car.push("Volvo");
+                        break;
+                    case 3:
+                        // unshift() operation
+                        car.unshift("Volks Wagen");
+                        break;
+                    case 4:
+                        // pop() operation
+                        car.pop();
+                        break;
+                    case 5:
+                        // shift() operation
+                        car.shift();
+                        break;
+                    case 6:
+                        // Modify element
+                        car[1] = "IVM";
+                        break;
+                    case 7:
+                        // Final state
+                        nextBtn.style.display = 'none';
+                        resetBtn.textContent = 'Start Over';
+                        break;
+                }
+                
+                // Update visualization
+                renderArray(car);
+                updateLengthDisplay();
+                
+                // Go to next step
+                goToStep(currentStep + 1);
+            }
+        }
+        
+        // Go to specific step
+        function goToStep(step) {
+            // Update current step
+            currentStep = step;
+            
+            // Update active step
+            operationSteps.forEach((stepEl, index) => {
+                if (index + 1 === step) {
+                    stepEl.classList.add('active');
+                } else {
+                    stepEl.classList.remove('active');
+                }
+            });
+            
+            // Update step dots
+            stepDots.forEach(dot => {
+                const dotStep = parseInt(dot.getAttribute('data-step'));
+                if (dotStep === step) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
+            
+            // Update array to match the step
+            if (step > 1 && step <= arrayHistory.length) {
+                car = [...arrayHistory[step - 1]];
+                renderArray(car);
+                updateLengthDisplay();
+            }
+            
+            // Update next button text for last step
+            if (step === totalSteps) {
+                nextBtn.textContent = 'Finish';
+            } else {
+                nextBtn.textContent = 'Next';
+            }
+        }
+        
+        // Reset the app
+        function resetApp() {
+            // Reset array to initial state
+            car = ["Benz", "Toyota", "Honda", "BMW"];
+            
+            // Reset to first step
+            goToStep(1);
+            
+            // Reset button text
+            resetBtn.textContent = 'Reset';
+            nextBtn.style.display = 'block';
+            
+            // Update visualization
+            renderArray(car);
+            updateLengthDisplay();
+            
+            // Show operation result for initial array
+            operationResult.textContent = `car = ["Benz", "Toyota", "Honda", "BMW"]`;
+        }
+        
+        // Initialize the app
+        init();
+    </script>
+</body>
+</html>
