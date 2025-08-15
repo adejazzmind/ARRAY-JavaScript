@@ -1,0 +1,1 @@
+In JavaScript, an array is a global object used to store an ordered collection of values, known as elements, in a single variable. Each element is assigned a numeric position called an index, with indexing starting at 0 for the first element.
